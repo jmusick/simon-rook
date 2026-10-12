@@ -3,7 +3,7 @@
 Static marketing site for the author **Simon Rook**, built with Astro and
 deployed to Cloudflare Pages. Live domain: `simonrook.com`.
 
-Companion to the book workspace at `C:\Users\JD\Projects\Simon Rook`, which
+Companion to the private book workspace at `C:\Users\JD\projects\simon-rook`, which
 holds the manuscripts, covers, and publishing files. This repo holds only the
 website.
 
@@ -53,11 +53,15 @@ separate set of variables — they need their own copies to run the form.
 
 ## Security headers
 
-[public/_headers](public/_headers) gives every route a Content-Security-Policy,
+[public/_headers](public/_headers) gives static responses a Content-Security-Policy,
 HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
 `Cross-Origin-Opener-Policy` and `Permissions-Policy`, long-caches the hashed
 `/_astro/*` files, and caches `/fonts/*` for 30 days. Pages applies it on deploy; `astro dev` and `astro preview` don't,
 so use `wrangler pages dev dist` to see it locally.
+
+Pages Functions set response headers themselves; `_headers` does not apply to
+`/api/contact`. The API header gap is tracked in
+[#7](https://github.com/jmusick/simon-rook/issues/7).
 
 The CSP allows only Cloudflare Turnstile, Cloudflare Web Analytics and Google
 Analytics; fonts are self-hosted, so `font-src` is `'self'`. Cloudflare Web
@@ -167,14 +171,15 @@ Everything below is a real, verified value except where marked.
 Verified against the book project on disk:
 
 - Title, subtitle, publication date (August 14, 2026), ASIN `B0HF5K9Q2L`,
-  format, and Amazon URL — from the vault note and KDP listing.
-- Chapter titles and part structure — from `Manuscript/MANUSCRIPT.md`.
+  format, and Amazon URL — published catalogue metadata in `src/data/books.ts`;
+  verify future changes against the KDP listing and private publishing records.
+- Chapter titles and part structure — from `manuscript/MANUSCRIPT.md`.
 - Word count "about 33,000" — measured from the manuscript (33,217).
 - The Part V description (three weeks, ~15 minutes a day) — from the
   manuscript's Part V introduction.
 - The reader note — quoted verbatim from the manuscript.
 - Reader promises on the home and book pages — from
-  `Planning/BOOK_OUTLINE.md`'s reader promise section.
+  `planning/BOOK_OUTLINE.md`'s reader promise section.
 
 Live and verified:
 
@@ -209,12 +214,23 @@ Live and verified:
 
 ## Project context
 
-This repository is public and contains only the website. Author, editorial, and
-publishing context lives in a private Obsidian vault at
-`C:\Users\JD\Vault\Projects\Simon Rook\` — see
-[AGENTS.md](AGENTS.md) for what's there and when to consult it.
+This public repository at `C:\Users\JD\source\simon-rook` owns the website
+source, build and deployment configuration, README, agent instructions, and
+technical audit findings tracked in GitHub Issues.
+
+The private workspace at `C:\Users\JD\projects\simon-rook` owns manuscripts,
+editorial briefs and research, publishing records and exports, production tools,
+and durable brand assets. Start with its README and AGENTS.md before changing
+author-facing copy; see [AGENTS.md](AGENTS.md) for source-of-truth paths.
+Its folders use kebab-case; book files keep their established filenames.
+The Obsidian vault is retired. Private context and unpublished material must
+stay out of this repository and its public issues.
 
 ## Possible next steps
+
+The [October 12, 2026 technical audit](docs/audits/2026-10-12.md) records SEO,
+security, and accessibility findings, priorities, validation coverage, and
+GitHub issue links.
 
 Not built, deliberately — the current scope is a lean author landing site.
 

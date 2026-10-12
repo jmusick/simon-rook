@@ -12,24 +12,28 @@ that still need real ones — read it before touching copy or visual styling.
 ## Private project context — read this first
 
 **This is a public repository. Author, editorial, and publishing context is
-deliberately kept out of it** and lives in a private Obsidian vault on the
-author's machine:
+deliberately kept out of it** and lives in the private asset workspace:
 
 ```
-C:\Users\JD\Vault\Projects\Simon Rook\
-  Simon Rook.md                 project hub — start here
-  Website.md                    conventions and constraints for this site
-  <Title>\<Title>.md            per-book status and publishing details
+C:\Users\JD\projects\simon-rook\
+  README.md                    project hub and information ownership
+  AGENTS.md                    private workspace conventions
+  <book-slug>\README.md        per-book status and production map
+  <book-slug>\planning\        editorial briefs, outlines, and progress
+  <book-slug>\manuscript\      canonical text and editorial audits
 ```
 
-Read those notes before writing or editing any author-facing copy — the About
-page, bios, author metadata, or anything describing who Simon Rook is. They
-carry constraints that this repo intentionally does not state. If the vault
+Read that guidance and relevant editorial briefs before writing or editing any
+author-facing copy — the About page, bios, author metadata, or anything describing
+who Simon Rook is. They
+carry constraints that this repo intentionally does not state. If the workspace
 isn't available to you, ask rather than guessing, and don't infer the missing
 context from what is or isn't in this repo.
 
-Nothing from those notes should be copied back into this repo, into commit
-messages, or into published page copy.
+Private editorial context must not be copied into this repo, commit messages,
+published page copy, or public GitHub issues. The Obsidian vault has been retired;
+do not require it or create new vault notes. Website implementation and deployment
+guidance belongs here; editorial and production records belong in the asset workspace.
 
 The bio on the About page is deliberately about the *work* — method, audience,
 and boundaries — rather than biography. Don't invent life details, credentials,
@@ -48,7 +52,7 @@ say so rather than fabricating.
   licenses — no font CDN.
 - Icons via `astro-icon` + `@iconify-json/simple-icons` / `lucide`.
 - Deploy target: the Cloudflare Pages project **`simonrook`**, connected to
-  `jmusick/SimonRook` with automatic deployments from `main`. **Pushing to
+  `jmusick/simon-rook` with automatic deployments from `main`. **Pushing to
   `main` publishes** — there is no separate deploy step. `name` in
   `wrangler.toml` must match the project name exactly or Git builds break.
 
@@ -82,11 +86,11 @@ say so rather than fabricating.
 Book content facts come from the book project on disk, not from invention:
 
 ```
-C:\Users\JD\Projects\Simon Rook\<Title>\
-  Planning\AUTHOR_BRIEF.md     audience, voice, boundaries
-  Planning\BOOK_OUTLINE.md     premise, reader promise, structure
-  Manuscript\MANUSCRIPT.md     canonical text, chapter titles, reader note
-  Assets\Cover\                source artwork
+C:\Users\JD\projects\simon-rook\<book-slug>\
+  planning\AUTHOR_BRIEF.md     audience, voice, boundaries
+  planning\BOOK_OUTLINE.md     premise, reader promise, structure
+  manuscript\MANUSCRIPT.md     canonical text, chapter titles, reader note
+  assets\cover\               source artwork
 ```
 
 Verify against those files before changing chapter titles, word counts, dates,
@@ -148,9 +152,11 @@ only a generic message, but one `curl` diagnoses it.
 
 ## Security headers
 
-`public/_headers` sets CSP, HSTS, `X-Frame-Options`, `Referrer-Policy`,
+For static responses, `public/_headers` sets CSP, HSTS, `X-Frame-Options`, `Referrer-Policy`,
 `Permissions-Policy` and cache lifetimes (`/_astro/*`, `/fonts/*`). Only Pages or
-`wrangler pages dev dist` applies it — not `astro dev`/`preview`. The CSP allows
+`wrangler pages dev dist` applies it — not `astro dev`/`preview`. Pages Functions
+must set their own headers; `_headers` does not apply to `/api/contact`.
+The current API header gap is tracked in GitHub issue #7. The CSP allows
 exactly Turnstile (`challenges.cloudflare.com`), Cloudflare Web Analytics
 (`static.cloudflareinsights.com`, `cloudflareinsights.com`) and GA
 (`www.googletagmanager.com`, `*.google-analytics.com`, `*.analytics.google.com`);
