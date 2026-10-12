@@ -15,7 +15,7 @@
     "@astrojs/sitemap": "^3.7.2",
     "@iconify-json/lucide": "^1.2.105",
     "@iconify-json/simple-icons": "^1.2.81",
-    "astro": "^6.2.2",
+    "astro": "^7.3.8",
     "astro-icon": "^1.1.5"
   },
   "allowScripts": {
