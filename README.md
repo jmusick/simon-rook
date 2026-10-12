@@ -1,7 +1,8 @@
 # Simon Rook — author site
 
-Static marketing site for the author **Simon Rook**, built with Astro and
-deployed to Cloudflare Pages. Live domain: `simonrook.com`.
+Static marketing site for the author **Simon Rook**, built with Astro 7 and
+deployed to Cloudflare Pages. Live domain: `simonrook.com`. Requires Node
+22.12 or newer.
 
 Companion to the private book workspace at `C:\Users\JD\projects\simon-rook`, which
 holds the manuscripts, covers, and publishing files. This repo holds only the
@@ -26,7 +27,9 @@ Functions, so submissions 404 there.
 The Cloudflare Pages project `simonrook` is connected to this repository with
 automatic deployments from `main`, so **pushing to `main` deploys**. There is no
 manual step, and `npx wrangler pages deploy dist` is only a fallback for
-publishing a local build.
+publishing a local build. `main` has no branch protection or required checks
+yet ([#5](https://github.com/jmusick/simon-rook/issues/5)), so check
+`npm run build` before pushing.
 
 Production configuration is split between committed plaintext configuration and
 dashboard secrets:
@@ -56,8 +59,8 @@ separate set of variables — they need their own copies to run the form.
 [public/_headers](public/_headers) gives static responses a Content-Security-Policy,
 HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
 `Cross-Origin-Opener-Policy` and `Permissions-Policy`, long-caches the hashed
-`/_astro/*` files, and caches `/fonts/*` for 30 days. Pages applies it on deploy; `astro dev` and `astro preview` don't,
-so use `wrangler pages dev dist` to see it locally.
+`/_astro/*` files, and caches `/fonts/*` for 30 days. Pages applies it on deploy; `astro dev` and
+`astro preview` don't, so use `wrangler pages dev dist` to see it locally.
 
 Pages Functions set response headers themselves; `_headers` does not apply to
 `/api/contact`. The API header gap is tracked in
@@ -68,7 +71,8 @@ Analytics; fonts are self-hosted, so `font-src` is `'self'`. Cloudflare Web
 Analytics isn't in the source: a `simonrook.com` zone setting injects its
 beacon at the edge, so it doesn't appear on `*.pages.dev` previews. It's
 cookieless and runs without consent; GA stays opt-in. Adding a new third-party
-script, font, or embed means adding its origin there too. After a deploy that touches the policy:
+script, font, or embed means adding its origin there too. After a deploy that
+touches the policy:
 
 ```bash
 curl -I https://simonrook.com/
@@ -77,6 +81,19 @@ curl -I https://simonrook.com/
 Then accept the cookie banner and check the console for CSP violations —
 the analytics tag only loads after consent, so that's the one path a
 too-tight policy breaks without anyone noticing.
+
+## Releases and dependencies
+
+The version in `package.json` is shown in the site footer. A release is a single
+commit titled `vX.Y.Z - <summary>` with an annotated `vX.Y.Z` tag; merging to
+`main` deploys it.
+
+`npm audit` is clean as of v1.5.1 (Astro 7.3.8). Dependabot alerts and security
+updates are enabled. Upgrade deliberately rather than with
+`npm audit fix --force`, and review any new dependency's install scripts —
+`allowScripts` in `package.json` is the lifecycle-script allowlist and is
+currently empty. The build prints a harmless astro-icon warning that
+`src/icons` doesn't exist.
 
 ## Debugging in VS Code
 
@@ -230,15 +247,18 @@ stay out of this repository and its public issues.
 
 The [October 12, 2026 technical audit](docs/audits/2026-10-12.md) records SEO,
 security, and accessibility findings, priorities, validation coverage, and
-GitHub issue links.
+GitHub issue links. Open findings live in
+[GitHub Issues](https://github.com/jmusick/simon-rook/issues); the dependency
+finding ([#3](https://github.com/jmusick/simon-rook/issues/3)) shipped in
+v1.5.1.
 
 Not built, deliberately — the current scope is a lean author landing site.
 
 - **Email list.** No signup exists and the privacy policy says so. Adding one
   (Kit/ConvertKit embed, or a Cloudflare D1 handler like HiddenLodgeWebsite
   uses) means updating the privacy policy in the same change.
-- **Rate limiting.** `/api/contact` has Turnstile and a honeypot but no request
-  cap. A Cloudflare WAF rate-limiting rule would close that if abuse appears.
+- **Rate limiting.** `/api/contact` has Turnstile, a honeypot and per-field
+  length caps but no request cap. A Cloudflare WAF rate-limiting rule would close that if abuse appears.
 - **Geo-gating the consent banner.** Everyone sees it today, which costs some
   analytics coverage outside the EU/UK where it isn't required. A small Pages
   Function reporting `request.cf.country` could show it only where it's needed.
