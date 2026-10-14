@@ -95,7 +95,8 @@ npm run preview   # serve the built output
 npm run build && npx wrangler pages dev dist   # Functions + _headers
 ```
 
-No test suite or linter is configured. Verify changes with `npm run build`
+`npm test` covers the contact Function only; no linter is configured. Verify
+other changes with `npm run build`
 and, for anything visual, `npm run dev` plus a browser check. `astro.config.mjs`
 sets `vite.server.strictPort` because the VS Code Firefox launch config is
 hardcoded to port 4321 — don't remove it (see README).
@@ -154,16 +155,39 @@ only a generic message, but one `curl` diagnoses it.
   form-less Contact page — don't revert.
 - `astro dev` uses Turnstile's always-passes test key and serves no Functions
   (submissions 404). Test with `npm run build && npx wrangler pages dev dist`.
-- Endpoint defenses, in case they look redundant: honeypot field `website`
-  (returns 200 and discards), per-field length caps (`LIMITS`), email format
-  check, CRLF stripping on header values, no CORS. No rate limiting by design —
-  add a WAF rule on `/api/contact` if needed.
+- Endpoint defenses, in case they look redundant: a 32 KiB body budget
+  (`MAX_BODY_BYTES`) counted on the streamed bytes before JSON parsing, not
+  just Content-Length (413); a JSON-object-of-strings shape check (400);
+  honeypot field `website` (returns 200 and discards); per-field length caps
+  (`LIMITS`; email 254, token 2048, matched by the form's `maxlength`); email
+  format check; CRLF stripping on header values; no CORS. All of them run
+  before Siteverify, so rejected requests cost no upstream calls. No rate
+  limiting by design. Add a WAF rule on `/api/contact` if needed.
+- Upstream calls have deadlines (`VERIFY_TIMEOUT_MS` 5 s, `SEND_TIMEOUT_MS`
+  10 s) and fail closed with a 504. A send timeout is **never retried**: the
+  provider may have accepted the mail, so a retry could deliver it twice.
+- Tests: `npm test` (Node's built-in runner, `fetch` mocked, no network) in
+  `test/contact.test.ts`. Run it after any change to the Function.
+- **Triage.** Every request logs one structured `contact` event: `requestId`
+  (also sent back as `X-Request-Id`), `status`, `stage`, `code` (e.g.
+  `verify_timeout`, `send_rejected`), plus `timeout`, `upstreamStatus`,
+  filtered `upstreamCodes` and an exception `errorName` where relevant. 5xx
+  events log at error level, 4xx at warn. Pages keeps no log history, so
+  stream them live (`npx wrangler pages deployment tail --project-name
+  simonrook`, or the deployment's Real-time Logs in the dashboard) and
+  reproduce, then match the `X-Request-Id` from the failing response. Logged
+  fields are an allowlist: never add submitted values, the token, auth
+  headers, secrets or raw upstream responses to it. Provider-side alerting
+  isn't set up.
 
 ## Security headers
 
-`public/_headers` applies only on Pages or `wrangler pages dev dist` — not
-`astro dev`/`preview` — and not to Function responses, which must set their own
-headers.
+`public/_headers` applies only to static responses on Pages or
+`wrangler pages dev dist`. It doesn't apply under `astro dev`/`preview`, and
+never to Function responses. `functions/api/contact.ts` sets its own
+(`API_HEADERS`: nosniff, HSTS, Referrer-Policy, X-Frame-Options, a JSON-only
+CSP, `no-store`). Keep its HSTS and Referrer-Policy values in step with
+`_headers`.
 
 The CSP allows exactly Turnstile, Cloudflare Web Analytics and GA; `font-src`
 and `style-src` are `'self'`. A new third-party origin must be added in the same

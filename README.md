@@ -62,9 +62,20 @@ HSTS, `X-Content-Type-Options`, `X-Frame-Options`, `Referrer-Policy`,
 `/_astro/*` files, and caches `/fonts/*` for 30 days. Pages applies it on deploy; `astro dev` and
 `astro preview` don't, so use `wrangler pages dev dist` to see it locally.
 
-Pages Functions set response headers themselves; `_headers` does not apply to
-`/api/contact`. The API header gap is tracked in
-[#7](https://github.com/jmusick/simon-rook/issues/7).
+`_headers` covers static responses only; Pages never applies it to Function
+responses. `/api/contact` sets its own headers in the Function (nosniff,
+HSTS, Referrer-Policy, X-Frame-Options, a JSON-only CSP, `no-store`), so check
+it separately:
+
+```bash
+curl -i https://simonrook.com/api/contact   # 405, with the API headers
+```
+
+When the contact form fails, every response carries an `X-Request-Id` that
+matches one structured log line in the Function. Stream the logs with
+`npx wrangler pages deployment tail --project-name simonrook` while
+reproducing; Pages keeps no log history. [AGENTS.md](AGENTS.md) lists the
+logged fields and what never gets logged.
 
 The CSP allows only Cloudflare Turnstile, Cloudflare Web Analytics and Google
 Analytics; fonts are self-hosted, so `font-src` is `'self'`. Cloudflare Web
