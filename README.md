@@ -157,7 +157,12 @@ book's `socialImage` card (1200×630) when it has one, otherwise the cover; the
 errors on the Schema.org validator (checked 2026-09-28).
 
 The sitemap's `lastmod` comes from the newest git commit touching each page's
-source files (`astro.config.mjs`). Cloudflare Pages builds from a shallow
+source files (`PAGE_SOURCES` in `astro.config.mjs`): the page itself, the book
+data and book components it renders, and the shared metadata sources
+`src/config/site.ts` and `src/layouts/Layout.astro`, which every page lists.
+`SiteHeader`, `SiteFooter` and `CookieConsent` are deliberately left out — the
+footer prints the version, so listing it would re-date every page on every
+release — and README, AGENTS and docs edits never move a date. Cloudflare Pages builds from a shallow
 clone, so the build unshallows it first (`git fetch --unshallow`); if that
 fails, `lastmod` is omitted rather than stamping every page with the same date.
 

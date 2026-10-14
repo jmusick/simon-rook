@@ -182,7 +182,10 @@ script, JSON-LD and `style=""`.
 - Book pages use `og:type=book`, the book's `socialImage` (else the cover) as
   the share image, and the cover as the `Book` schema image.
 - Sitemap `lastmod` is git-derived in `astro.config.mjs`: `PAGE_SOURCES` maps
-  routes to source files — add new pages there. Details are in README.
+  routes to source files — add new pages there, and list any new component a
+  route renders. Every route includes `site.ts` and `Layout.astro`; header,
+  footer and consent are excluded on purpose (the footer shows the version, so
+  it would re-date every page each release). Details are in README.
 
 ## Conventions
 
