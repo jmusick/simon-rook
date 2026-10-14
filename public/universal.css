@@ -105,7 +105,9 @@
 	--surface-border: #26344d;
 	--bone-1: #f2ece1;
 	--bone-2: #b4becd;
-	--bone-3: #78849a;
+	/* Tertiary text. Must stay >= 4.5:1 on --surface (#131d30), the panel the
+	   12px contact hints sit on: 5.29:1 here (the old #78849a was 4.47:1). */
+	--bone-3: #8591a6;
 	--bronze: #c08b4f;
 	--bronze-bright: #dba86a;
 	--bronze-dim: #8a6236;

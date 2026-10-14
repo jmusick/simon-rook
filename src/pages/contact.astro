@@ -96,11 +96,16 @@ const functionUnavailable = import.meta.env.DEV;
 							<input id="cf-website" name="website" type="text" tabindex="-1" autocomplete="off" />
 						</div>
 
+						{/*
+							Rendered explicitly by the script below (api.js loads with
+							render=explicit) so it can pick `size` from the width this container
+							actually has. The default 300px widget overflows the ~246px content box
+							of a 320px viewport, and `flexible` also has a 300px minimum.
+						*/}
 						<div
-							class="cf-turnstile"
+							class="turnstile-slot"
+							id="cf-turnstile"
 							data-sitekey={turnstileSiteKey}
-							data-theme="dark"
-							data-appearance="interaction-only"
 						>
 						</div>
 
@@ -156,7 +161,7 @@ const functionUnavailable = import.meta.env.DEV;
 		<script
 			slot="head"
 			is:inline
-			src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+			src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=srTurnstileReady"
 			async
 			defer></script>
 	)}
@@ -164,6 +169,39 @@ const functionUnavailable = import.meta.env.DEV;
 
 {turnstileSiteKey && (
 	<script>
+		// Turnstile: 300px "normal" when the container can hold it, otherwise the
+		// 150px "compact" widget (the documented narrow-layout size). Cloudflare's
+		// `flexible` size has a 300px minimum, so it can't fix a 246px container.
+		const NORMAL_WIDGET_WIDTH = 300;
+		const slot = document.getElementById("cf-turnstile");
+		let widgetId: string | undefined;
+
+		const mountTurnstile = () => {
+			if (!slot || !window.turnstile?.render) return;
+			if (widgetId !== undefined) window.turnstile.remove?.(widgetId);
+			widgetId = window.turnstile.render(slot, {
+				sitekey: slot.dataset.sitekey ?? "",
+				theme: "dark",
+				appearance: "interaction-only",
+				size: slot.clientWidth >= NORMAL_WIDGET_WIDTH ? "normal" : "compact",
+			});
+		};
+
+		// api.js may finish loading before or after this module runs.
+		if (window.turnstile) mountTurnstile();
+		else window.srTurnstileReady = mountTurnstile;
+
+		// Rotation or window resize can cross the threshold; a widget of the wrong
+		// size is rebuilt (this drops any unsubmitted token, and a fresh one follows).
+		let lastNormal = (slot?.clientWidth ?? 0) >= NORMAL_WIDGET_WIDTH;
+		window.addEventListener("resize", () => {
+			const normal = (slot?.clientWidth ?? 0) >= NORMAL_WIDGET_WIDTH;
+			if (normal !== lastNormal) {
+				lastNormal = normal;
+				mountTurnstile();
+			}
+		});
+
 		const form = document.getElementById("contact-form") as HTMLFormElement | null;
 		const status = document.getElementById("cf-status");
 		const submit = document.getElementById("cf-submit") as HTMLButtonElement | null;
@@ -214,18 +252,18 @@ const functionUnavailable = import.meta.env.DEV;
 					if (!response.ok) {
 						setStatus(result?.error ?? "Something went wrong. Please try again.", "error");
 						// A token is single-use — without a reset the next attempt fails too.
-						window.turnstile?.reset();
+						window.turnstile?.reset(widgetId);
 						submit.disabled = false;
 						return;
 					}
 
 					form.reset();
-					window.turnstile?.reset();
+					window.turnstile?.reset(widgetId);
 					setStatus(result?.message ?? "Thanks — your message has been sent.", "ok");
 					submit.disabled = false;
 				} catch {
 					setStatus("Could not reach the server. Please try again in a moment.", "error");
-					window.turnstile?.reset();
+					window.turnstile?.reset(widgetId);
 					submit.disabled = false;
 				}
 			});
@@ -291,6 +329,13 @@ const functionUnavailable = import.meta.env.DEV;
 	.field textarea:focus-visible {
 		outline: none;
 		border-color: var(--bronze);
+	}
+
+	/* Lets the flex item shrink to the form's content box instead of growing to
+	   the widget's width; the script picks a widget size that fits inside it. */
+	.turnstile-slot {
+		min-width: 0;
+		max-width: 100%;
 	}
 
 	/* Kept in the layout but out of sight and out of the a11y tree — a sighted

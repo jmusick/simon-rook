@@ -15,5 +15,17 @@ interface ImportMeta {
 interface Window {
 	turnstile?: {
 		reset: (widget?: string | HTMLElement) => void;
+		render?: (
+			container: string | HTMLElement,
+			params: {
+				sitekey: string;
+				theme?: "light" | "dark" | "auto";
+				appearance?: "always" | "execute" | "interaction-only";
+				size?: "normal" | "flexible" | "compact";
+			},
+		) => string;
+		remove?: (widget?: string | HTMLElement) => void;
 	};
+	/** Global `onload` callback named in the Turnstile api.js URL on the Contact page. */
+	srTurnstileReady?: () => void;
 }
