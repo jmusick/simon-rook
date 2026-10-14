@@ -162,8 +162,8 @@ data and book components it renders, and the shared metadata sources
 `src/config/site.ts` and `src/layouts/Layout.astro`, which every page lists.
 `SiteHeader`, `SiteFooter` and `CookieConsent` are deliberately left out — the
 footer prints the version, so listing it would re-date every page on every
-release — and README, AGENTS and docs edits never move a date. Cloudflare Pages builds from a shallow
-clone, so the build unshallows it first (`git fetch --unshallow`); if that
+release — and README, AGENTS and docs edits never move a date. Cloudflare
+Pages builds from a shallow clone, so the build unshallows it first (`git fetch --unshallow`); if that
 fails, `lastmod` is omitted rather than stamping every page with the same date.
 
 One server-side route, `POST /api/contact`
