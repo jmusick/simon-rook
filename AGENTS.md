@@ -54,7 +54,8 @@ say so rather than fabricating.
 - `src/pages/` — routes: `index`, `books/index`, `books/[slug]` (one page per
   book via `getStaticPaths`), `about`, `contact`, `privacy-policy`, `404`.
 - `src/components/` — `SiteHeader`, `SiteFooter` (shows `v{SITE_VERSION}`),
-  `BookCard`, and `CookieConsent` (the consent banner, and the only loader of
+  `BookCard`, `ReaderNote` (the book's `readerNote` — render it on any page or
+  card that describes book content), and `CookieConsent` (the consent banner, and the only loader of
   the Google tag).
 - `src/layouts/Layout.astro` — shared shell: meta, Open Graph/Twitter
   (`socialImageUrl`/`Alt`/`Width`/`Height`, `ogType`), a JSON-LD prop, and a
@@ -182,7 +183,10 @@ script, JSON-LD and `style=""`.
 - Book pages use `og:type=book`, the book's `socialImage` (else the cover) as
   the share image, and the cover as the `Book` schema image.
 - Sitemap `lastmod` is git-derived in `astro.config.mjs`: `PAGE_SOURCES` maps
-  routes to source files — add new pages there. Details are in README.
+  routes to source files — add new pages there, and list any new component a
+  route renders. Every route includes `site.ts` and `Layout.astro`; header,
+  footer and consent are excluded on purpose (the footer shows the version, so
+  it would re-date every page each release). Details are in README.
 
 ## Conventions
 

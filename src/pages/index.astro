@@ -2,6 +2,7 @@
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import Layout from "../layouts/Layout.astro";
+import ReaderNote from "../components/ReaderNote.astro";
 import {
 	PERSON_ID,
 	PERSON_SCHEMA,
@@ -94,6 +95,10 @@ const structuredData = {
 				<dt>Length</dt>
 				<dd>{book.wordCount}</dd>
 			</dl>
+
+			<div style="margin-top: var(--space-6);">
+				<ReaderNote book={book} />
+			</div>
 
 			<div class="button-row" style="margin-top: var(--space-6);">
 				{retailer && (

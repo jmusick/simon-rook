@@ -33,18 +33,37 @@ function lastCommitDate(...files) {
 	return iso ? new Date(iso).toISOString() : undefined;
 }
 
-// Pathname → the source files its content comes from. Unlisted pages get no lastmod.
+// Pathname → the source files its content or metadata comes from. Unlisted
+// pages get no lastmod.
+//
+// Every page shares SHARED: titles/descriptions/canonical/social tags come from
+// Layout.astro and site.ts (site name, tagline, author and WebSite JSON-LD,
+// socials), so a change there really does change every page. Shared chrome
+// (SiteHeader, SiteFooter, CookieConsent) is deliberately NOT listed: the
+// footer prints the version, which changes every release, and that would stamp
+// every page with each release date. Add a chrome file to a route only when its
+// content is part of what that route says. README/AGENTS/docs are never sources.
+const SHARED = ['src/config/site.ts', 'src/layouts/Layout.astro'];
 const BOOK_DATA = 'src/data/books.ts';
+const READER_NOTE = 'src/components/ReaderNote.astro';
 const PAGE_SOURCES = {
-	'/': ['src/pages/index.astro', BOOK_DATA],
-	'/about/': ['src/pages/about.astro'],
-	'/books/': ['src/pages/books/index.astro', BOOK_DATA],
-	'/contact/': ['src/pages/contact.astro'],
-	'/privacy-policy/': ['src/pages/privacy-policy.astro'],
+	'/': ['src/pages/index.astro', BOOK_DATA, READER_NOTE, ...SHARED],
+	'/about/': ['src/pages/about.astro', ...SHARED],
+	'/books/': [
+		'src/pages/books/index.astro',
+		'src/components/BookCard.astro',
+		BOOK_DATA,
+		READER_NOTE,
+		...SHARED,
+	],
+	'/contact/': ['src/pages/contact.astro', ...SHARED],
+	'/privacy-policy/': ['src/pages/privacy-policy.astro', ...SHARED],
 };
 function sourcesFor(pathname) {
 	if (PAGE_SOURCES[pathname]) return PAGE_SOURCES[pathname];
-	if (pathname.startsWith('/books/')) return ['src/pages/books/[slug].astro', BOOK_DATA];
+	if (pathname.startsWith('/books/')) {
+		return ['src/pages/books/[slug].astro', BOOK_DATA, READER_NOTE, ...SHARED];
+	}
 	return undefined;
 }
 
