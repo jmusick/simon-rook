@@ -107,6 +107,16 @@ hardcoded to port 4321 — don't remove it (see README).
 - Keep `npm audit` at zero; upgrade deliberately, never a blind
   `npm audit fix --force`. `allowScripts` in `package.json` is the lifecycle
   script allowlist (currently empty). Dependabot alerts are enabled.
+- CI (`.github/workflows/build.yml`, job `build`) runs `npm ci`,
+  `npm audit --audit-level=low`, `npm test --if-present` and `npm run build`
+  on PRs to `main` and pushes to `main`. Third-party actions are pinned to
+  full commit SHAs (Dependabot's `github-actions` ecosystem bumps them);
+  workflow permissions stay `contents: read`.
+- Intended `main` ruleset: require the `build` status check, block force-push
+  and deletion, no required reviews (sole maintainer). Repository admins are a
+  deliberate bypass actor so release commits can be pushed straight to `main`
+  and emergencies can be handled. Recovery from a bad deploy: roll back to a
+  previous deployment in Cloudflare Pages, then fix forward.
 
 ## Contact form and email
 

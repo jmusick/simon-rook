@@ -92,7 +92,15 @@ commit titled `vX.Y.Z - <summary>` with an annotated `vX.Y.Z` tag; merging to
 updates are enabled. Upgrade deliberately rather than with
 `npm audit fix --force`, and review any new dependency's install scripts —
 `allowScripts` in `package.json` is the lifecycle-script allowlist and is
-currently empty. The build prints a harmless astro-icon warning that
+currently empty.
+
+A GitHub Actions workflow (`build`) installs from the lockfile, runs
+`npm audit`, tests (if present) and builds on every PR and push to `main`. The
+`main` ruleset should require that check and block force-push and deletion;
+no reviews are required since there is one maintainer. Repository admins can
+bypass the ruleset for release commits and emergencies, and Cloudflare Pages
+can roll back to a previous deployment if a bad build ships. Action versions
+are pinned to commit SHAs and kept current by Dependabot. The build prints a harmless astro-icon warning that
 `src/icons` doesn't exist.
 
 ## Debugging in VS Code
