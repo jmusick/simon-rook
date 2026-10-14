@@ -192,6 +192,16 @@ const { measurementId } = Astro.props;
 		margin: 0;
 	}
 
+	/* The link sits inside a sentence and is nearly the same lightness as the
+	   surrounding text, so colour alone doesn't identify it (WCAG 1.4.1). The
+	   global `a` rule removes underlines, so restore one here, scoped to this
+	   inline link rather than the banner's buttons. */
+	.cc-body a {
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.2em;
+	}
+
 	.cc-actions {
 		display: flex;
 		gap: var(--space-3);
