@@ -43,6 +43,7 @@ Desktop.ini
 
 # local Claude Code settings and scratch space
 .claude/settings.local.json
+.claude/worktrees/
 .tmp/
 
 # wrangler

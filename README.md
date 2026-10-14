@@ -100,8 +100,9 @@ A GitHub Actions workflow (`build`) installs from the lockfile, runs
 no reviews are required since there is one maintainer. Repository admins can
 bypass the ruleset for release commits and emergencies, and Cloudflare Pages
 can roll back to a previous deployment if a bad build ships. Action versions
-are pinned to commit SHAs and kept current by Dependabot. The build prints a harmless astro-icon warning that
-`src/icons` doesn't exist.
+are pinned to commit SHAs and kept current by Dependabot.
+
+The build prints a harmless astro-icon warning that `src/icons` doesn't exist.
 
 ## Debugging in VS Code
 
