@@ -1,0 +1,15 @@
+---
+import { Icon } from "astro-icon/components";
+import type { Book } from "../data/books";
+
+interface Props {
+	book: Pick<Book, "readerNote">;
+}
+
+const { book } = Astro.props;
+---
+
+<div class="notice">
+	<Icon name="lucide:info" aria-hidden="true" />
+	<p>{book.readerNote}</p>
+</div>

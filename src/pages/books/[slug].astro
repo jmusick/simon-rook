@@ -2,6 +2,7 @@
 import { Image, getImage } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import Layout from "../../layouts/Layout.astro";
+import ReaderNote from "../../components/ReaderNote.astro";
 import { PERSON_REF, SITE_NAME, SITE_URL } from "../../config/site";
 import { BOOKS, formatPublished, type Book } from "../../data/books";
 
@@ -179,9 +180,8 @@ const structuredData = {
 
 				<section>
 					<h2>Reader note</h2>
-					<div class="notice" style="margin-top: var(--space-4);">
-						<Icon name="lucide:info" aria-hidden="true" />
-						<p>{book.readerNote}</p>
+					<div style="margin-top: var(--space-4);">
+						<ReaderNote book={book} />
 					</div>
 				</section>
 			</div>
