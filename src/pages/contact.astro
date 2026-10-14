@@ -252,18 +252,18 @@ const functionUnavailable = import.meta.env.DEV;
 					if (!response.ok) {
 						setStatus(result?.error ?? "Something went wrong. Please try again.", "error");
 						// A token is single-use — without a reset the next attempt fails too.
-						window.turnstile?.reset();
+						window.turnstile?.reset(widgetId);
 						submit.disabled = false;
 						return;
 					}
 
 					form.reset();
-					window.turnstile?.reset();
+					window.turnstile?.reset(widgetId);
 					setStatus(result?.message ?? "Thanks — your message has been sent.", "ok");
 					submit.disabled = false;
 				} catch {
 					setStatus("Could not reach the server. Please try again in a moment.", "error");
-					window.turnstile?.reset();
+					window.turnstile?.reset(widgetId);
 					submit.disabled = false;
 				}
 			});
