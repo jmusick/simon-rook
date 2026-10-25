@@ -108,7 +108,9 @@ hardcoded to port 4321 — don't remove it (see README).
   tag. Merging to `main` deploys.
 - Keep `npm audit` at zero; upgrade deliberately, never a blind
   `npm audit fix --force`. `allowScripts` in `package.json` is the lifecycle
-  script allowlist (currently empty). Dependabot alerts are enabled.
+  script allowlist (currently empty). Dependabot alerts and security updates,
+  CodeQL code scanning (default setup), secret scanning and push protection
+  are enabled in the repo settings.
 - CI (`.github/workflows/build.yml`, job `build`) runs `npm ci`,
   `npm audit --audit-level=low`, `npm test --if-present` and `npm run build`
   on PRs to `main` and pushes to `main`. Third-party actions are pinned to

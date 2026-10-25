@@ -100,7 +100,8 @@ commit titled `vX.Y.Z - <summary>` with an annotated `vX.Y.Z` tag; merging to
 `main` deploys it.
 
 `npm audit` is clean as of v1.5.1 (Astro 7.3.8). Dependabot alerts and security
-updates are enabled. Upgrade deliberately rather than with
+updates, CodeQL code scanning, secret scanning and push protection are
+enabled. Upgrade deliberately rather than with
 `npm audit fix --force`, and review any new dependency's install scripts —
 `allowScripts` in `package.json` is the lifecycle-script allowlist and is
 currently empty.
