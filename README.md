@@ -15,6 +15,7 @@ npm install
 npm run dev       # http://localhost:4321 — pages only, no Functions
 npm run build     # -> dist/
 npm run preview   # serve the built output
+npm run check     # type check: astro check, then the Function's tsconfig
 
 npm run build && npx wrangler pages dev dist   # includes /api/contact
 ```
@@ -111,7 +112,7 @@ CI (`.github/workflows/ci.yml`) calls the shared
 `main`: **Baseline** (a Gitleaks scan of the full history, lockfile integrity
 including the `allowScripts` allowlist, `npm audit --audit-level=low`, registry
 signatures, and dependency review on PRs) and **Web app** (`npm ci`,
-`npm test`, `npm run build`). A **CI gate** job passes only when both do. The
+`npm run check`, `npm test`, `npm run build`). A **CI gate** job passes only when both do. The
 `main` ruleset requires `CI gate` and blocks force-push and deletion;
 no reviews are required since there is one maintainer. Repository admins can
 bypass the ruleset for release commits and emergencies, and Cloudflare Pages

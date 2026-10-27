@@ -37,7 +37,8 @@ say so rather than fabricating.
 
 ## Stack
 
-- **Astro 7** (static output), TypeScript, Node `>=22.12`. No UI framework —
+- **Astro 7** (static output), TypeScript 6, Node `>=22.12`. TypeScript stays
+  on 6 because `astro check` refuses 7; don't bump it until Astro supports it. No UI framework —
   components are `.astro` files with inline `<style>`/`<script>`.
 - Hand-written CSS; design tokens live in
   [public/universal.css](public/universal.css) (palette and fonts: see README).
@@ -92,11 +93,15 @@ book content, and don't soften it.
 npm run dev       # astro dev, http://localhost:4321 (no Functions)
 npm run build     # astro build -> dist/
 npm run preview   # serve the built output
+npm run check     # astro check, then tsc -p functions
 npm run build && npx wrangler pages dev dist   # Functions + _headers
 ```
 
-`npm test` covers the contact Function only; no linter is configured. Verify
-other changes with `npm run build`
+`npm test` covers the contact Function only; no linter is configured.
+`npm run check` type-checks the site with `astro check` and the Function with
+`tsc -p functions`: the root `tsconfig.json` excludes `functions/`, which has
+its own config carrying the Workers types. Verify other changes with
+`npm run check`, `npm run build`
 and, for anything visual, `npm run dev` plus a browser check. `astro.config.mjs`
 sets `vite.server.strictPort` because the VS Code Firefox launch config is
 hardcoded to port 4321 — don't remove it (see README).
@@ -116,8 +121,8 @@ hardcoded to port 4321 — don't remove it (see README).
   pushes to `main`: `baseline.yml` (Gitleaks over full history, lockfile
   integrity incl. `allowScripts`, `npm audit --audit-level=low`, registry
   signatures, dependency review on PRs) and `web-app.yml` (`npm ci`,
-  `npm test`, `npm run build`). The `CI gate` job passes only when every
-  other job did. To add a check, set its input (e.g. `typecheck-command`)
+  `npm run check`, `npm test`, `npm run build`). The `CI gate` job passes only when every
+  other job did. To add a check, set its input (e.g. `lint-command`)
   rather than writing steps. Shared workflows and actions are pinned to full
   commit SHAs with the tag as a comment (Dependabot's `github-actions`
   ecosystem bumps them); workflow permissions stay `contents: read`.
