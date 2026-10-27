@@ -12,6 +12,9 @@ import { execFileSync } from 'node:child_process';
  * small; this takes seconds). If that fails too, lastmod is left out entirely —
  * a shallow history would stamp every page with the same latest commit, which
  * is worse than no date. No git at all also means no lastmod.
+ *
+ * @param {string[]} args
+ * @param {number} [timeout]
  */
 function git(args, timeout = 10_000) {
 	try {
@@ -28,6 +31,7 @@ function git(args, timeout = 10_000) {
 const shallowState = () => git(['rev-parse', '--is-shallow-repository']);
 if (shallowState() === 'true') git(['fetch', '--unshallow', '--quiet'], 60_000);
 const canDateFromGit = shallowState() === 'false';
+/** @param {...string} files */
 function lastCommitDate(...files) {
 	const iso = git(['log', '-1', '--format=%cI', '--', ...files]);
 	return iso ? new Date(iso).toISOString() : undefined;
@@ -46,6 +50,7 @@ function lastCommitDate(...files) {
 const SHARED = ['src/config/site.ts', 'src/layouts/Layout.astro'];
 const BOOK_DATA = 'src/data/books.ts';
 const READER_NOTE = 'src/components/ReaderNote.astro';
+/** @type {Record<string, string[]>} */
 const PAGE_SOURCES = {
 	'/': ['src/pages/index.astro', BOOK_DATA, READER_NOTE, ...SHARED],
 	'/about/': ['src/pages/about.astro', ...SHARED],
@@ -59,6 +64,7 @@ const PAGE_SOURCES = {
 	'/contact/': ['src/pages/contact.astro', ...SHARED],
 	'/privacy-policy/': ['src/pages/privacy-policy.astro', ...SHARED],
 };
+/** @param {string} pathname */
 function sourcesFor(pathname) {
 	if (PAGE_SOURCES[pathname]) return PAGE_SOURCES[pathname];
 	if (pathname.startsWith('/books/')) {
