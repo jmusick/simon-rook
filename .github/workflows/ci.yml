@@ -24,6 +24,7 @@ jobs:
     name: Web app
     uses: jmusick/ci/.github/workflows/web-app.yml@a8ac9c292577382c63e5a38af58d38a4cd6f8504 # v0.3.0
     with:
+      typecheck-command: npm run check
       test-command: npm test
       build-command: npm run build
 
