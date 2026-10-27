@@ -111,12 +111,17 @@ hardcoded to port 4321 — don't remove it (see README).
   script allowlist (currently empty). Dependabot alerts and security updates,
   CodeQL code scanning (default setup), secret scanning and push protection
   are enabled in the repo settings.
-- CI (`.github/workflows/build.yml`, job `build`) runs `npm ci`,
-  `npm audit --audit-level=low`, `npm test --if-present` and `npm run build`
-  on PRs to `main` and pushes to `main`. Third-party actions are pinned to
-  full commit SHAs (Dependabot's `github-actions` ecosystem bumps them);
-  workflow permissions stay `contents: read`.
-- Intended `main` ruleset: require the `build` status check, block force-push
+- CI (`.github/workflows/ci.yml`) calls the shared
+  [jmusick/ci](https://github.com/jmusick/ci) workflows on every PR and on
+  pushes to `main`: `baseline.yml` (Gitleaks over full history, lockfile
+  integrity incl. `allowScripts`, `npm audit --audit-level=low`, registry
+  signatures, dependency review on PRs) and `web-app.yml` (`npm ci`,
+  `npm test`, `npm run build`). The `CI gate` job passes only when every
+  other job did. To add a check, set its input (e.g. `typecheck-command`)
+  rather than writing steps. Shared workflows and actions are pinned to full
+  commit SHAs with the tag as a comment (Dependabot's `github-actions`
+  ecosystem bumps them); workflow permissions stay `contents: read`.
+- Intended `main` ruleset: require the `CI gate` status check, block force-push
   and deletion, no required reviews (sole maintainer). Repository admins are a
   deliberate bypass actor so release commits can be pushed straight to `main`
   and emergencies can be handled. Recovery from a bad deploy: roll back to a

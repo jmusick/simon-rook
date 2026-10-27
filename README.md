@@ -106,13 +106,18 @@ enabled. Upgrade deliberately rather than with
 `allowScripts` in `package.json` is the lifecycle-script allowlist and is
 currently empty.
 
-A GitHub Actions workflow (`build`) installs from the lockfile, runs
-`npm audit`, tests (if present) and builds on every PR and push to `main`. The
-`main` ruleset should require that check and block force-push and deletion;
+CI (`.github/workflows/ci.yml`) calls the shared
+[jmusick/ci](https://github.com/jmusick/ci) workflows on every PR and push to
+`main`: **Baseline** (a Gitleaks scan of the full history, lockfile integrity
+including the `allowScripts` allowlist, `npm audit --audit-level=low`, registry
+signatures, and dependency review on PRs) and **Web app** (`npm ci`,
+`npm test`, `npm run build`). A **CI gate** job passes only when both do. The
+`main` ruleset requires `CI gate` and blocks force-push and deletion;
 no reviews are required since there is one maintainer. Repository admins can
 bypass the ruleset for release commits and emergencies, and Cloudflare Pages
-can roll back to a previous deployment if a bad build ships. Action versions
-are pinned to commit SHAs and kept current by Dependabot.
+can roll back to a previous deployment if a bad build ships. The shared
+workflows and every action are pinned to commit SHAs, and Dependabot's
+`github-actions` entry proposes new jmusick/ci releases and action versions.
 
 The build prints a harmless astro-icon warning that `src/icons` doesn't exist.
 
