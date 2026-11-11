@@ -34,7 +34,7 @@ const bookSchema = {
 	alternateName: `${book.title}: ${book.subtitle}`,
 	author: PERSON_REF,
 	description: book.blurb,
-	bookFormat: "https://schema.org/EBook",
+	bookFormat: `https://schema.org/${book.schemaFormat}`,
 	datePublished: book.published,
 	inLanguage: "en",
 	url: canonicalUrl,
@@ -150,11 +150,7 @@ const structuredData = {
 
 				<section>
 					<h2>What's inside</h2>
-					<p style="margin-top: var(--space-4);">
-						Every chapter opens with a recognizable modern situation, introduces one Stoic
-						idea in plain language, says clearly what that idea does <em>not</em> mean, and
-						ends with a concrete exercise you can do the same day.
-					</p>
+					<p style="margin-top: var(--space-4);" set:html={book.contentsIntro} />
 					<ol class="contents" style="margin-top: var(--space-5);">
 						{book.parts.map((part) => (
 							<li class="contents-part">

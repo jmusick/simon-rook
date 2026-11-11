@@ -67,7 +67,9 @@ say so rather than fabricating.
   `href: null` are hidden everywhere. `PROFILE_URLS` is the subset valid as
   `sameAs` (the Amazon entry is `isProfile: false`: a book, not the author).
 - `src/data/books.ts` — the book catalogue: metadata, reader promises, cover,
-  chapter structure, retailer links, reader note, optional 1200×630
+  chapter structure, the "What's inside" intro (`contentsIntro`, rendered as
+  trusted HTML), the home-page `pullquote`, the schema.org `schemaFormat`,
+  retailer links, reader note, optional 1200×630
   `socialImage`. Adding a title is appending a `Book` and dropping its cover in
   `src/assets/` — no new pages.
 - `functions/api/contact.ts` — the only server-side code (see below).

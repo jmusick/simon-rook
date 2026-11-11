@@ -296,5 +296,7 @@ Not built, deliberately — the current scope is a lean author landing site.
   Function reporting `request.cf.country` could show it only where it's needed.
 - **A second title.** Append a `Book` to [src/data/books.ts](src/data/books.ts)
   and drop its cover in `src/assets/` — plus, optionally, a 1200×630
-  `socialImage` card, without which shares use the cover. The routes, cards,
+  `socialImage` card, without which shares use the cover. The entry must also
+  carry its own `contentsIntro`, `pullquote` and `schemaFormat`; the type
+  checker flags any that are missing. The routes, cards,
   structured data, and sitemap follow automatically.

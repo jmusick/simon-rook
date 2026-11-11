@@ -53,10 +53,22 @@ export interface Book {
 	/** ISO date the edition went on sale. */
 	published: string;
 	format: string;
+	/**
+	 * The schema.org `bookFormat` for the JSON-LD on the book page. Separate
+	 * from `format`, which is the display string.
+	 */
+	schemaFormat: "EBook" | "Paperback" | "Hardcover" | "AudiobookFormat";
 	asin: string;
 	/** Verified against the canonical manuscript, rounded down. */
 	wordCount: string;
+	/**
+	 * Intro paragraph above the chapter list on the book page. Rendered as
+	 * HTML (so `<em>` works): trusted catalogue data only, never user input.
+	 */
+	contentsIntro: string;
 	parts: BookPart[];
+	/** Pull quote on the home page when this is the featured book. */
+	pullquote: { text: string; cite: string };
 	retailers: Retailer[];
 	/**
 	 * Verbatim from the manuscript's reader note. This is a health-adjacent
@@ -98,8 +110,11 @@ export const BOOKS: Book[] = [
 			"The cover of The Stoic Mind for Overthinkers beside the title and the line: A practical guide to acting without perfect certainty.",
 		published: "2026-08-14",
 		format: "Kindle ebook",
+		schemaFormat: "EBook",
 		asin: "B0HF5K9Q2L",
 		wordCount: "About 33,000 words",
+		contentsIntro:
+			"Every chapter opens with a recognizable modern situation, introduces one Stoic idea in plain language, says clearly what that idea does <em>not</em> mean, and ends with a concrete exercise you can do the same day.",
 		parts: [
 			{
 				name: "Part I — Understand the Loop",
@@ -140,6 +155,10 @@ export const BOOKS: Book[] = [
 					"Three weeks — See Clearly, Choose Deliberately, Act With Courage. About fifteen minutes a day, each with a lesson, a written practice, an action, and a one-minute evening review.",
 			},
 		],
+		pullquote: {
+			text: "Instead of asking, “How can I make this turn out exactly as I want?” Stoicism asks, “What is mine to do, and how can I do it well?”",
+			cite: "From the introduction",
+		},
 		retailers: [
 			{
 				label: "Amazon Kindle",
