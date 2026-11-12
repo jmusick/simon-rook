@@ -1,6 +1,6 @@
 ---
-import { Icon } from "astro-icon/components";
 import Layout from "../layouts/Layout.astro";
+import SocialLinks from "../components/SocialLinks.astro";
 import {
 	ACTIVE_SOCIALS,
 	CONTACT_EMAIL,
@@ -140,19 +140,7 @@ const functionUnavailable = import.meta.env.DEV;
 		{ACTIVE_SOCIALS.length > 0 && (
 			<section class="section-sm">
 				<h2>Elsewhere</h2>
-				<nav class="social-nav" style="margin-top: var(--space-4);" aria-label="Author profiles">
-					{ACTIVE_SOCIALS.map((s) => (
-						<a
-							href={s.href}
-							target="_blank"
-							rel="noopener noreferrer"
-							aria-label={s.label}
-							class="social-link"
-						>
-							<Icon name={s.icon} aria-hidden="true" />
-						</a>
-					))}
-				</nav>
+				<SocialLinks style="margin-top: var(--space-4);" />
 			</section>
 		)}
 	</div>
