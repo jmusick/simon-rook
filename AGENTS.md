@@ -55,7 +55,8 @@ say so rather than fabricating.
 - `src/pages/` — routes: `index`, `books/index`, `books/[slug]` (one page per
   book via `getStaticPaths`), `about`, `contact`, `privacy-policy`, `404`.
 - `src/components/` — `SiteHeader`, `SiteFooter` (shows `v{SITE_VERSION}`),
-  `BookCard`, `ReaderNote` (the book's `readerNote` — render it on any page or
+  `SocialLinks` (the author-profile icon row, used by the header, footer and
+  Contact page), `BookCard`, `ReaderNote` (the book's `readerNote` — render it on any page or
   card that describes book content), and `CookieConsent` (the consent banner, and the only loader of
   the Google tag).
 - `src/layouts/Layout.astro` — shared shell: meta, Open Graph/Twitter
