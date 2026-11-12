@@ -176,10 +176,6 @@ export const BOOKS: Book[] = [
 /** The title featured on the home page — most recently published first. */
 export const FEATURED_BOOK: Book = BOOKS[0]!;
 
-export function getBook(slug: string): Book | undefined {
-	return BOOKS.find((b) => b.slug === slug);
-}
-
 export function primaryRetailer(book: Book): Retailer | undefined {
 	return book.retailers.find((r) => r.primary) ?? book.retailers[0];
 }

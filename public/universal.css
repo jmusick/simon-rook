@@ -531,12 +531,6 @@ img {
 	border: 1px solid var(--bronze-dim);
 }
 
-.badge-filled {
-	color: var(--night);
-	background: var(--bronze);
-	border-color: var(--bronze);
-}
-
 .badge-neutral {
 	color: var(--bone-3);
 	border-color: var(--border-hairline);
@@ -603,10 +597,6 @@ img {
 	border: 1px solid var(--border-hairline);
 	border-radius: var(--radius-md);
 	padding: clamp(20px, 3vw, 32px);
-}
-
-.panel-quiet {
-	background: rgba(19, 29, 48, 0.5);
 }
 
 .rule {
